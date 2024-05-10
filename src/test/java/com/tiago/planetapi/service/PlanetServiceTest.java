@@ -1,12 +1,14 @@
 package com.tiago.planetapi.service;
 
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
+import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import com.tiago.planetapi.domain.Planet;
@@ -26,6 +28,12 @@ public class PlanetServiceTest {
         when(repository.save(PLANET)).thenReturn(PLANET);
         Planet actual = planetService.create(PLANET);
         assertThat(actual).isEqualTo(PLANET);
+    }
+
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsException(){
+        when(repository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
+        assertThatThrownBy(() -> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
     }
 
 }
