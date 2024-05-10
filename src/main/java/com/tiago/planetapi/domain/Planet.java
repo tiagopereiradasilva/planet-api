@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -20,7 +19,7 @@ public class Planet {
     private String name;
     private String climate;
     private String terrain;
-    
+
     public Planet(String name, String climate, String terrain) {
         this.name = name;
         this.climate = climate;
