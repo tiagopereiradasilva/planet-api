@@ -21,5 +21,9 @@ public class PlanetService {
     public Planet find(Long id) {     
         return planetRepository.findById(id).orElseThrow(() -> new RuntimeException("Planet not found")) ;
     }
+
+    public Planet findByName(String name) {
+       return planetRepository.findByName(name).orElseThrow(() -> new RuntimeException("Planet not found")) ;
+    }
     
 }
