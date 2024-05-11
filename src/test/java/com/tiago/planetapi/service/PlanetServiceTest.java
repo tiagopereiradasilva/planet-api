@@ -2,6 +2,9 @@ package com.tiago.planetapi.service;
 
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
+import static com.tiago.planetapi.common.PlanetConstants.ID;
+import static com.tiago.planetapi.common.PlanetConstants.INVALID_ID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import com.tiago.planetapi.domain.Planet;
 import com.tiago.planetapi.repository.PlanetRepository;
@@ -34,6 +39,20 @@ public class PlanetServiceTest {
     public void createPlanet_WithInvalidData_ReturnsException(){
         when(repository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
         assertThatThrownBy(() -> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
+    }
+
+    
+    @Test
+    public void findPlanetById_WithValidId_ReturnsPlanet(){
+        when(repository.findById(ID)).thenReturn(Optional.of(PLANET));
+        Planet actual = planetService.find(ID);
+        assertThat(actual).isEqualTo(PLANET);
+    }
+
+    @Test
+    public void findPlanetById_WithInvalidId_ReturnsException(){
+        when(repository.findById(INVALID_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> planetService.find(INVALID_ID)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
     }
 
 }
