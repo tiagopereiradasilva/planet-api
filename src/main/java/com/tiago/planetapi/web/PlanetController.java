@@ -33,10 +33,13 @@ public class PlanetController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Planet> getMethodName(@PathVariable Long id) {
+    public ResponseEntity<Planet> getById(@PathVariable Long id) {
         return ResponseEntity.ok(planetService.find(id));
     }
     
-    
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Planet> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(planetService.findByName(name));
+    }
     
 }
