@@ -3,7 +3,7 @@ package com.tiago.planetapi.service;
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.ID;
-import static com.tiago.planetapi.common.PlanetConstants.INVALID_ID;
+import static com.tiago.planetapi.common.PlanetConstants.UNEXISTING_ID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,16 +43,16 @@ public class PlanetServiceTest {
 
     
     @Test
-    public void findPlanetById_WithValidId_ReturnsPlanet(){
+    public void getPlanet_ByExistingId_ReturnsPlanet(){
         when(repository.findById(ID)).thenReturn(Optional.of(PLANET));
         Planet actual = planetService.find(ID);
         assertThat(actual).isEqualTo(PLANET);
     }
 
     @Test
-    public void findPlanetById_WithInvalidId_ReturnsException(){
-        when(repository.findById(INVALID_ID)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> planetService.find(INVALID_ID)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+    public void getPlanet_ByUnexistingId_ReturnsException(){
+        when(repository.findById(UNEXISTING_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> planetService.find(UNEXISTING_ID)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
     }
 
 }
