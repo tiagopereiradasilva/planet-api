@@ -17,5 +17,9 @@ public class PlanetService {
     public Planet create(Planet planet) {
         return planetRepository.save(planet);
     }
+
+    public Planet find(Long id) {     
+        return planetRepository.findById(id).orElseThrow(() -> new RuntimeException("Planet not found")) ;
+    }
     
 }
