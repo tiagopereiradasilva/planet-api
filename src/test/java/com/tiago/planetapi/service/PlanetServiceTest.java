@@ -2,8 +2,6 @@ package com.tiago.planetapi.service;
 
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
-import static com.tiago.planetapi.common.PlanetConstants.ID;
-import static com.tiago.planetapi.common.PlanetConstants.UNEXISTING_ID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -44,15 +43,28 @@ public class PlanetServiceTest {
     
     @Test
     public void getPlanet_ByExistingId_ReturnsPlanet(){
-        when(repository.findById(ID)).thenReturn(Optional.of(PLANET));
-        Planet actual = planetService.find(ID);
+        when(repository.findById(1L)).thenReturn(Optional.of(PLANET));
+        Planet actual = planetService.find(1L);
         assertThat(actual).isEqualTo(PLANET);
     }
 
     @Test
     public void getPlanet_ByUnexistingId_ReturnsException(){
-        when(repository.findById(UNEXISTING_ID)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> planetService.find(UNEXISTING_ID)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+        when(repository.findById(0L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> planetService.find(0L)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+    }
+
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet(){
+        when(repository.findByName("planet")).thenReturn(Optional.of(PLANET));
+        Planet actual = planetService.findByName("planet");
+        assertThat(actual).isEqualTo(PLANET);
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsException(){
+        when(repository.findByName("")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> planetService.findByName("")).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
     }
 
 }
