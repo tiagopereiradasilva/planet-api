@@ -1,6 +1,6 @@
 package com.tiago.planetapi.service;
 
-import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
+import static com.tiago.planetapi.common.PlanetConstants.EMPTY_PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.LIST_PLANETS;
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,8 +41,8 @@ public class PlanetServiceTest {
 
     @Test
     public void createPlanet_WithInvalidData_ReturnsException(){
-        when(repository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
-        assertThatThrownBy(() -> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
+        when(repository.save(EMPTY_PLANET)).thenThrow(RuntimeException.class);
+        assertThatThrownBy(() -> planetService.create(EMPTY_PLANET)).isInstanceOf(RuntimeException.class);
     }
 
     
