@@ -2,12 +2,13 @@ package com.tiago.planetapi.service;
 
 import java.util.List;
 
-import org.hibernate.boot.model.internal.QueryBinder;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import com.tiago.planetapi.domain.Planet;
 import com.tiago.planetapi.repository.PlanetRepository;
+import com.tiago.planetapi.utils.QueryBuilder;
 
 @Service
 public class PlanetService {
@@ -30,8 +31,8 @@ public class PlanetService {
        return planetRepository.findByName(name).orElseThrow(() -> new RuntimeException("Planet not found")) ;
     }
 
-    public List<Planet> list(String climate, String terrain) {
-        Example<Planet> example = Example.of(new Planet(null, climate, terrain));
+    public List<Planet> list(String climate, String terrain) {        
+        Example<Planet> example = QueryBuilder.makeQuery(Planet.builder().climate(climate).terrain(terrain).build());
         return planetRepository.findAll(example);
     }
     
