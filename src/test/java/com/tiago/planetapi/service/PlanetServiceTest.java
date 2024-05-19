@@ -4,7 +4,9 @@ import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.LIST_PLANETS;
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -90,6 +92,19 @@ public class PlanetServiceTest {
         assertThat(actual).hasSize(1);
         assertThat(actual.get(0).getName()).isEqualTo("Pluto");
     } 
+
+    @Test
+    public void deletePlanet_WithExistingId_DoesNotThrowAnyException(){
+        when(repository.findById(1L)).thenReturn(Optional.of(PLANET));
+        doNothing().when(repository).delete(PLANET);
+        assertThatCode(() -> planetService.delete(1L)).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void deletePlanet_WithUnexisting_ThrowsException(){
+        when(repository.findById(0L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> planetService.delete(0L)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+    }
 
     private List<Planet> getListPlanetByClimate(final List<Planet> listPlanets, final String pClimate){
        return listPlanets.stream().filter(p -> p.getClimate().equals(pClimate)).toList();
