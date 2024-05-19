@@ -53,7 +53,7 @@ public class PlanetController {
     }
     
     @DeleteMapping("{id}")
-    public ResponseEntity<Planet> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         planetService.delete(id);
         return ResponseEntity.noContent().build();
     }
