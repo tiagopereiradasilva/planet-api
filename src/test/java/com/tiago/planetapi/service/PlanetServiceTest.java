@@ -1,21 +1,25 @@
 package com.tiago.planetapi.service;
 
-import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.INVALID_PLANET;
+import static com.tiago.planetapi.common.PlanetConstants.LIST_PLANETS;
+import static com.tiago.planetapi.common.PlanetConstants.PLANET;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
+import org.springframework.data.domain.Example;
 
 import com.tiago.planetapi.domain.Planet;
 import com.tiago.planetapi.repository.PlanetRepository;
+import com.tiago.planetapi.utils.QueryBuilder;
 
 @ExtendWith(MockitoExtension.class)
 public class PlanetServiceTest {
@@ -65,5 +69,35 @@ public class PlanetServiceTest {
         when(repository.findByName("")).thenReturn(Optional.empty());
         assertThatThrownBy(() -> planetService.findByName("")).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
     }
+
+    @Test
+    public void listPlanet_WithoutFilter_ReturnsListAllPlanets(){
+        Example<Planet> example = QueryBuilder.makeQuery(Planet.builder().climate(null).terrain(null).build());
+        when(repository.findAll(example)).thenReturn(LIST_PLANETS);
+        var actual = planetService.list(null, null);
+        assertThat(actual).isNotEmpty();
+        assertThat(actual).hasSize(5);        
+    }
+
+
+    @Test
+    public void listPlanet_WithFilter_ReturnsListPlanetsFiltered(){
+        final String climate = "Cold";
+        final String terrain = "Gaseous";
+        Example<Planet> example = QueryBuilder.makeQuery(Planet.builder().climate(climate).terrain(terrain).build());
+        when(repository.findAll(example)).thenReturn(getListPlanetByTerrain(getListPlanetByClimate(LIST_PLANETS, climate), terrain));
+        var actual = planetService.list(climate, terrain);
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0).getName()).isEqualTo("Pluto");
+    } 
+
+    private List<Planet> getListPlanetByClimate(final List<Planet> listPlanets, final String pClimate){
+       return listPlanets.stream().filter(p -> p.getClimate().equals(pClimate)).toList();
+    }
+
+    private List<Planet> getListPlanetByTerrain(final List<Planet> listPlanets, final String pTerrain){
+        return listPlanets.stream().filter(p -> p.getTerrain().equals(pTerrain)).toList();
+     }
+
 
 }
