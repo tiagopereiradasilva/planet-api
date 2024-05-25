@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tiago.planetapi.domain.Planet;
 import com.tiago.planetapi.service.PlanetService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -38,7 +40,7 @@ public class PlanetController {
     
 
     @PostMapping
-    public ResponseEntity<Planet> create(@RequestBody Planet planet) {
+    public ResponseEntity<Planet> create(@RequestBody @Valid Planet planet) {
         return ResponseEntity.status(HttpStatus.CREATED).body(planetService.create(planet));
     }
 
