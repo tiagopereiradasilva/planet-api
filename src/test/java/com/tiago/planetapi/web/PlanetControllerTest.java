@@ -7,8 +7,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tiago.planetapi.domain.Planet;
 import com.tiago.planetapi.service.PlanetService;
 
+import static com.tiago.planetapi.common.PlanetConstants.EMPTY_PLANET;
 import static com.tiago.planetapi.common.PlanetConstants.PLANET;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +30,7 @@ public class PlanetControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void createPlane_WithValidData_ReturnsCreated() throws Exception {
+    public void createPlanet_WithValidData_ReturnsCreated() throws Exception {
         when(planetService.create(PLANET)).thenReturn(PLANET);
         mockMvc.perform(
             post("/planets")
@@ -37,5 +39,25 @@ public class PlanetControllerTest {
         )
         .andExpect(status().isCreated())
         .andExpect(jsonPath( "$").value(PLANET));
-    }    
+    }
+
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
+
+        Planet invalidPlanet = new Planet();
+
+        mockMvc.perform(
+            post("/planets")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invalidPlanet))
+        )
+        .andExpect(status().isUnprocessableEntity());
+
+        mockMvc.perform(
+            post("/planets")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(EMPTY_PLANET))
+        )
+        .andExpect(status().isUnprocessableEntity());
+    } 
 }
