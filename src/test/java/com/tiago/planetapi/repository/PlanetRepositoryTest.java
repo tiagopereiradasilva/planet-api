@@ -39,7 +39,14 @@ public class PlanetRepositoryTest {
         assertThatThrownBy(() -> repository.save(EMPTY_PLANET));
     }
 
-
+    @Test
+    public void savePlane_WithExistingName_ThrowsException(){
+        Planet planet = new Planet("Pluto", "Temperate", "Rocky");
+        Planet planetSaved = entityManager.persistFlushFind(planet);
+        entityManager.detach(planetSaved); // Tal método deve ser chamado para remover o mapeamento do objeto, de forma que o JPA tentará criar um novo e não atualizar um já criado.
+        planetSaved.setId(null);
+        assertThatThrownBy(() -> repository.save(planetSaved));
+    }
 
 
 }
