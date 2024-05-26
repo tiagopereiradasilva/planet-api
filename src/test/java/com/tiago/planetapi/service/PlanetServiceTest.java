@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
 import com.tiago.planetapi.domain.Planet;
+import com.tiago.planetapi.exception.PlanetNotFoundException;
 import com.tiago.planetapi.repository.PlanetRepository;
 import com.tiago.planetapi.utils.QueryBuilder;
 
@@ -41,8 +42,8 @@ public class PlanetServiceTest {
 
     @Test
     public void createPlanet_WithInvalidData_ReturnsException(){
-        when(repository.save(EMPTY_PLANET)).thenThrow(RuntimeException.class);
-        assertThatThrownBy(() -> planetService.create(EMPTY_PLANET)).isInstanceOf(RuntimeException.class);
+        when(repository.save(EMPTY_PLANET)).thenThrow(PlanetNotFoundException.class);
+        assertThatThrownBy(() -> planetService.create(EMPTY_PLANET)).isInstanceOf(PlanetNotFoundException.class);
     }
 
     
@@ -56,7 +57,7 @@ public class PlanetServiceTest {
     @Test
     public void getPlanet_ByUnexistingId_ReturnsException(){
         when(repository.findById(0L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> planetService.find(0L)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+        assertThatThrownBy(() -> planetService.find(0L)).isInstanceOf(PlanetNotFoundException.class).hasMessage("Planet not found");
     }
 
     @Test
@@ -69,7 +70,7 @@ public class PlanetServiceTest {
     @Test
     public void getPlanet_ByUnexistingName_ReturnsException(){
         when(repository.findByName("")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> planetService.findByName("")).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+        assertThatThrownBy(() -> planetService.findByName("")).isInstanceOf(PlanetNotFoundException.class).hasMessage("Planet not found");
     }
 
     @Test
@@ -103,7 +104,7 @@ public class PlanetServiceTest {
     @Test
     public void deletePlanet_WithUnexisting_ThrowsException(){
         when(repository.findById(0L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> planetService.delete(0L)).isInstanceOf(RuntimeException.class).hasMessage("Planet not found");
+        assertThatThrownBy(() -> planetService.delete(0L)).isInstanceOf(PlanetNotFoundException.class).hasMessage("Planet not found");
     }
 
     private List<Planet> getListPlanetByClimate(final List<Planet> listPlanets, final String pClimate){
