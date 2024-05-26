@@ -1,5 +1,7 @@
 package com.tiago.planetapi.web;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,46 +33,46 @@ public class PlanetControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    public void createPlanet_WithValidData_ReturnsCreated() throws Exception {
-        when(planetService.create(PLANET)).thenReturn(PLANET);
-        mockMvc.perform(
-            post("/planets")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(PLANET))
-        )
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath( "$").value(PLANET));
-    }
+    @Nested
+    @DisplayName("Create Planet Test")
+    class CreatePlanetTest {
+        @Test
+        public void createPlanet_WithValidData_ReturnsCreated() throws Exception {
+            when(planetService.create(PLANET)).thenReturn(PLANET);
+            mockMvc.perform(
+                    post("/planets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(PLANET)))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$").value(PLANET));
+        }
 
-    @Test
-    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
+        @Test
+        public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
 
-        Planet invalidPlanet = new Planet();
+            Planet invalidPlanet = new Planet();
 
-        mockMvc.perform(
-            post("/planets")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(invalidPlanet))
-        )
-        .andExpect(status().isUnprocessableEntity());
+            mockMvc.perform(
+                    post("/planets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(invalidPlanet)))
+                    .andExpect(status().isUnprocessableEntity());
 
-        mockMvc.perform(
-            post("/planets")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(EMPTY_PLANET))
-        )
-        .andExpect(status().isUnprocessableEntity());
-    }    
+            mockMvc.perform(
+                    post("/planets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(EMPTY_PLANET)))
+                    .andExpect(status().isUnprocessableEntity());
+        }
 
-    @Test
-    public void createPlanet_WithExistingname_ReturnsConflict() throws Exception {
-        when(planetService.create(any())).thenThrow(DataIntegrityViolationException.class);
-        mockMvc.perform(
-            post("/planets")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(PLANET))
-        )
-        .andExpect(status().isConflict());
+        @Test
+        public void createPlanet_WithExistingname_ReturnsConflict() throws Exception {
+            when(planetService.create(any())).thenThrow(DataIntegrityViolationException.class);
+            mockMvc.perform(
+                    post("/planets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(PLANET)))
+                    .andExpect(status().isConflict());
+        }
     }
 }
