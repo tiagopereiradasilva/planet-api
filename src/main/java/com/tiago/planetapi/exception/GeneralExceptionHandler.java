@@ -25,4 +25,10 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler{
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
+
+    @ExceptionHandler(PlanetNotFoundException.class)
+    private ResponseEntity<ProblemDetail> handlerPlanetNotFoundException(PlanetNotFoundException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.tiago.planetapi.domain.Planet;
+import com.tiago.planetapi.exception.PlanetNotFoundException;
 import com.tiago.planetapi.repository.PlanetRepository;
 import com.tiago.planetapi.utils.QueryBuilder;
 
@@ -23,11 +24,11 @@ public class PlanetService {
     }
 
     public Planet find(Long id) {     
-        return planetRepository.findById(id).orElseThrow(() -> new RuntimeException("Planet not found")) ;
+        return planetRepository.findById(id).orElseThrow(() -> new PlanetNotFoundException("Planet not found")) ;
     }
 
     public Planet findByName(String name) {
-       return planetRepository.findByName(name).orElseThrow(() -> new RuntimeException("Planet not found")) ;
+       return planetRepository.findByName(name).orElseThrow(() -> new PlanetNotFoundException("Planet not found")) ;
     }
 
     public List<Planet> list(String climate, String terrain) {        
@@ -36,7 +37,7 @@ public class PlanetService {
     }
 
     public void delete(Long id) {
-       Planet planet = planetRepository.findById(id).orElseThrow(() -> new RuntimeException("Planet not found")) ;
+       Planet planet = planetRepository.findById(id).orElseThrow(() -> new PlanetNotFoundException("Planet not found")) ;
        planetRepository.delete(planet);
     }
     
